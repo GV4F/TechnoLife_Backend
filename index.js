@@ -4,6 +4,7 @@ require("dotenv").config();
 const morgan = require("morgan");
 const { mongoose } = require("mongoose");
 const express = require("express");
+const cookieParser = require("cookie-parser");
 // * Routes
 const productRoute = require("./Routes/Product.routes.js");
 const userRoute = require("./Routes/User.routes");
@@ -18,6 +19,7 @@ mongoose.connect(process.env.MONGO_URI)
 // * MIDDLEWARE
 app.use(express.json());
 app.use(morgan("dev"));
+app.use(cookieParser());
 
 app.get("/", (req, res)=> {
   res.send("Welcome to TechnoLife server");

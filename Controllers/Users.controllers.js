@@ -11,12 +11,38 @@ const getAllUsers = async (req, res) => {
   }
 }
 
-// - CREATE A NEW POST
+// - REGISTER
 const createUser = async(req, res) => {
   try {
     const { user, password } = req.body;
     const newUser = await UsersService.createUser(user, password);
+
+    res.cookie("token", newUser.token);
     return res.status(201).json(newUser);
+  } catch (err) {
+    console.error(err)
+    return res.status(500).json({message: "Error"})
+  }
+}
+
+// - LOGIN
+const login = async(req, res) => {
+  try {
+    const { user, password } = req.body;
+    const findUser = await UsersService.searchUser(user, password);
+
+    res.cookie("token", findUser.token);
+    return res.status(200).json({ message: "Welcome", findUser});
+  } catch (err) {
+    console.error(err)
+    return res.status(500).json({message: "Error"})
+  }
+}
+
+// - LOGOUT
+const logout = async(req, res) => {
+  try {
+    res.clearCookie("token").json({ message: "Removed Token" }).status(200);
   } catch (err) {
     console.error(err)
     return res.status(500).json({message: "Error"})
@@ -25,5 +51,7 @@ const createUser = async(req, res) => {
 
 module.exports = {
   getAllUsers,
-  createUser
+  createUser,
+  login,
+  logout
 }
